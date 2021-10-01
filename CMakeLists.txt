@@ -17,19 +17,38 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/main.c
     ${PROJECT_SOURCE_DIR}/pcg_basic.h
     ${PROJECT_SOURCE_DIR}/pcg_basic.c
+    ${PROJECT_SOURCE_DIR}/kmeans.h
+    ${PROJECT_SOURCE_DIR}/kmeans.c
+    ${PROJECT_SOURCE_DIR}/ui.h
+    ${PROJECT_SOURCE_DIR}/ui.c
+    ${PROJECT_SOURCE_DIR}/kmeans_opencl.h
+    ${PROJECT_SOURCE_DIR}/kmeans_opencl.c
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-# copy script 'plot.py' in the bin/ dir to be used by the app
 configure_file(${PROJECT_SOURCE_DIR}/plot.py ${BIN_OUTPUT_DIR}/plot.py COPYONLY)
-# file(COPY ${PROJECT_SOURCE_DIR}/plot.py DESTINATION ${BIN_OUTPUT_DIR})
+configure_file(${PROJECT_SOURCE_DIR}/pcg.cl ${BIN_OUTPUT_DIR}/pcg.cl COPYONLY)
+configure_file(${PROJECT_SOURCE_DIR}/kmeans.cl ${BIN_OUTPUT_DIR}/kmeans.cl COPYONLY)
 
 add_custom_command(
-        TARGET ${PROJECT_NAME}  POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-            ${PROJECT_SOURCE_DIR}/plot.py
-            ${BIN_OUTPUT_DIR}/plot.py)
+    TARGET ${PROJECT_NAME}  POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+        ${PROJECT_SOURCE_DIR}/plot.py
+        ${BIN_OUTPUT_DIR}/plot.py)
+add_custom_command(
+    TARGET ${PROJECT_NAME}  POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+        ${PROJECT_SOURCE_DIR}/pcg.cl
+        ${BIN_OUTPUT_DIR}/pcg.cl)
+add_custom_command(
+    TARGET ${PROJECT_NAME}  POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+        ${PROJECT_SOURCE_DIR}/kmeans.cl
+        ${BIN_OUTPUT_DIR}/kmeans.cl)
+    
+
+add_subdirectory(data_structures)
 
 # includes
 target_include_directories(${PROJECT_NAME} PRIVATE ./)
@@ -40,8 +59,19 @@ if (UNIX)
     target_link_libraries(${PROJECT_NAME} m)
 endif (UNIX)
 
+find_package(OpenCL REQUIRED)
+include_directories(${OpenCL_INCLUDE_DIRS})
+link_directories(${OpenCL_LIBRARY})
+target_link_libraries (${PROJECT_NAME} ${OpenCL_LIBRARY})
+
 # Windows specifics
 if (WIN32)
+    include_directories(${PROJECT_NAME} 
+    ${CMAKE_CURRENT_LIST_DIR}/third_party/include)
+    target_link_libraries(${PROJECT_NAME} 
+    ${CMAKE_CURRENT_LIST_DIR}/third_party/lib/x64/SDL2.lib
+    ${CMAKE_CURRENT_LIST_DIR}/third_party/lib/x64/SDL2main.lib)
+
     get_target_property(sources ${PROJECT_NAME} SOURCES)
     foreach(file ${sources})
         get_filename_component(path "${file}" ABSOLUTE)

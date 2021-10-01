@@ -6,6 +6,8 @@
 #include <stdint.h>
 
 #include "pcg_basic.h"
+#include "kmeans.h"
+#include "kmeans_opencl.h"
 
 void onStart(int argc, char* argv[]);
 void onExit(void);
@@ -14,7 +16,9 @@ int main(int argc, char* argv[])
 {
     onStart(argc, argv);
 
-
+    // kmeans();
+    kmeans_opencl(argc, argv);
+    
 
     return EXIT_SUCCESS;
 }
