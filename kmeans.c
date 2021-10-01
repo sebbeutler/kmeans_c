@@ -1,6 +1,8 @@
 #include "kmeans.h"
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include <math.h>
 #include <SDL.H>
 
@@ -25,7 +27,7 @@ typedef struct Specie
 	clist* points;
 } Specie;
 
-vector points;
+vector vec_points;
 int point_count = 100;
 int specie_count = 3;
 
@@ -35,26 +37,12 @@ clist *pointList = NULL;
 
 void kmeans_init()
 {
-    points = new_vector( sizeof( Point ), point_count, 0 );
-
-	// VEC( points, Point, 1 ) = (Point) { 50, 30 };
-	// VEC( points, Point, 2 ) = (Point) { 100, 40 };
-	// VEC( points, Point, 3 ) = (Point) { 20, 10 };
-
-	// VEC( points, Point, 4 ) = (Point) { 450, 250 };
-	// VEC( points, Point, 5 ) = (Point) { 420, 250 };
-	// VEC( points, Point, 6 ) = (Point) { 460, 270 };
-
-	// VEC( points, Point, 7 ) = (Point) { 850, 450 };
-	// VEC( points, Point, 8 ) = (Point) { 800, 450 };
-	// VEC( points, Point, 0 ) = (Point) { 835, 425 };
-
-
+    vec_points = new_vector( sizeof( Point ), point_count, 0 );
 
 	for ( int i = 0; i < point_count; i++ )
 	{
-		VEC( points, Point, i ) = (Point) { UI_WIDTH*pcg32_doublerand(), UI_HEIGHT*pcg32_doublerand() };
-		cy_insert( &pointList, &VEC( points, Point, i ) );
+		VEC( vec_points, Point, i ) = (Point) { UI_WIDTH*pcg32_doublerand(), UI_HEIGHT*pcg32_doublerand() };
+		cy_insert( &pointList, &VEC( vec_points, Point, i ) );
 	}
 
 	Point* c;
@@ -77,7 +65,7 @@ void kmeans_init()
 	cy_clear(&pointList);
 	for ( int i = 0; i < point_count; i++ )
 	{
-		cy_insert( &pointList, &VEC( points, Point, i ) );
+		cy_insert( &pointList, &VEC( vec_points, Point, i ) );
 	}
 
 	int count_point = 0;
@@ -129,7 +117,7 @@ void kmeans_end()
 	cy_clean(&speciesList);
 	cy_clear(&pointList);
 
-	free_vector(&points);
+	free_vector(&vec_points);
 }
 
 double distance_point( Point *p1, Point *p2 )

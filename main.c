@@ -28,8 +28,6 @@ int main(int argc, char* argv[])
 struct timeb progStart, progEnd;
 #endif // !_WIN32
 
-char BIN_PATH[255];
-
 void onStart(int argc, char* argv[])
 {
     printf(
@@ -43,17 +41,6 @@ void onStart(int argc, char* argv[])
     atexit(&onExit);
     // Setup the random number generator
     pcg32_srandom((unsigned long long)time(NULL), (unsigned long long) & printf);
-
-    // Get the program binary path from the program arguments
-    strcpy(BIN_PATH, argv[0]);
-	for (size_t i=strlen(BIN_PATH)-1; i>=0; i--)
-	{
-		if (BIN_PATH[i] == '/' || BIN_PATH[i] == '\\')
-		{
-			BIN_PATH[i+1] = '\0';
-			break;
-		}
-	}
     
 #ifdef _WIN32
     // Save the time when the program starts to get the execution time later

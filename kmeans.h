@@ -5,9 +5,6 @@
 
 typedef struct Point Point;
 
-extern clist *speciesList;
-extern clist *pointList;
-
 void kmeans_init();
 
 void kmeans_step();
@@ -19,6 +16,5 @@ int speciate( clist* pointlist, clist* species );
 double distance_point( Point *p1, Point *p2 );
 
 void kmeans();
-
 
 #endif // !KMEANS_H
