@@ -16,8 +16,8 @@ int main(int argc, char* argv[])
 {
     onStart(argc, argv);
 
-    // kmeans();
-    kmeans_opencl(argc, argv);
+    kmeans();
+    // kmeans_opencl(argc, argv);
     
 
     return EXIT_SUCCESS;
