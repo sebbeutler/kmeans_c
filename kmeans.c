@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include <SDL.H>
 
 #include "data_structures/vector.h"
 #include "data_structures/clist.h"
